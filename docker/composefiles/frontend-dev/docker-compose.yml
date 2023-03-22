@@ -10,8 +10,8 @@ services:
   broker-core:
     image: registry.gitlab.cc-asp.fraunhofer.de/eis-ids/broker/core
     volumes:
-      - /etc/idscert/localhost:/etc/cert/
-      #- c:/etc/idscert/localhost:/etc/cert/
+     # - /etc/idscert/localhost:/etc/cert/
+      - /etc/cert:/etc/cert/
     environment:
     - SPARQL_ENDPOINT=http://broker-fuseki:3030/connectorData
     - ELASTICSEARCH_HOSTNAME=broker-elasticsearch
@@ -33,10 +33,11 @@ services:
       - broker-fuseki:/fuseki
 
   broker-elasticsearch:
-    image: elasticsearch:7.9.3
+    image: elasticsearch:7.16.2
     environment:
     - http.port=9200
     - http.cors.enabled=true
+   # - http.cors.allow-origin=/(http://localhost:3000|http://localhost:4000)/
     - http.cors.allow-origin=http://localhost:3000
     - http.cors.allow-headers=*
     - http.cors.allow-credentials=true
@@ -50,17 +51,10 @@ services:
     image: mongo:latest
     volumes:
       - db:/data/db
-    expose:
       - "27017"
 
   mongodb-handler:
     image: registry.gitlab.cc-asp.fraunhofer.de/eis-ids/broker/mongodb-handler
     ports:
-      - "4000:4000"
-    environment:
-      - MONGODB_ENDPOINT=mongodb://mongodb:27017/users
-      - JWT_SECRET=somethingsecret
-      - ADMIN_PASSWORD=admin
-      - BROKER_URL=http://broker-core:8080
-    depends_on:
-      - "mongodb"
+      - "27017:27017"
+

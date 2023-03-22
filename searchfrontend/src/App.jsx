@@ -17,17 +17,16 @@ import SearchConnectors from "./components/SearchConnectors";
 import SearchFhgResources from "./components/SearchFhgResources";
 import DataPrivacyView from "./DataPrivacyView";
 import ImprintView from "./ImprintView";
+import MDSHome from "./MDSHome"
+import ToolbarList from './components/ToolbarList';
 
 import "./css/App.scss"
-import FhgResourceView from "./components/ConnectorFhg";
+import "./css/MDS.css"
 import Maintainer from "./components/Maintainer";
 import UsageControl from "./components/UsageControl";
 import ParticipantList from "./components/ParticipantList";
-import Tooltip from '@material-ui/core/Tooltip';
 import SearchMDMResources from './components/SearchMDMResources';
 import { BrokerResourceView } from './components/BrokerResourceView';
-import { SearchBroker, BrokerConnectorView, BrokerFilter } from "./components/ConnectorBroker";
-import { SearchParis, ParisConnectorView } from "./components/ConnectorParis";
 
 import { Provider } from 'react-redux';
 import store from './store';
@@ -38,6 +37,8 @@ import Adminx from './components/Adminx';
 import { BrokerConnectorViewComponent } from './components/BrokerConnectorViewComponent';
 
 import { elasticsearchURL } from './urlConfig';
+import Footer from './components/Footer';
+import ImprintViewMDS from './ImprintViewMDS';
 
 const drawerWidth = 300;
 const styles = theme => ({
@@ -63,6 +64,10 @@ const styles = theme => ({
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.leavingScreen
         }),
+    },
+    appBarMDS: {
+        background: 'none !important',
+        boxShadow: 'none'
     },
     appBarShift: {
         marginLeft: drawerWidth,
@@ -119,7 +124,7 @@ const styles = theme => ({
         flexGrow: 1,
         height: '100vh',
         overflow: 'auto',
-        backgroundColor: 'white',
+        //backgroundColor: 'white',
         transition: theme.transitions.create("width", {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.leavingScreen
@@ -169,13 +174,16 @@ class App extends React.Component {
     tenant = process.env.REACT_APP_TENANT || 'eis';
     tenant = this.tenant.toLowerCase();
 
-    setBrokerURL = () => {
-        if (window._env_ === undefined)
-            this.brokerURL = 'https://localhost';
-        else
-            this.brokerURL = window._env_.REACT_APP_BROKER_URL;
-        this.brokerMainURL = this.brokerURL;
-        this.brokerURL = new URL('/es', this.brokerURL).toString();
+    /*
+    Do not initialize broker URL in componentDidMount because it is only called onComponentMount.
+    Get Broker URL dynamically to make it available for all routing paths.
+    */
+    getBrokerURL = () => {        
+        // development only
+       // return new URL(window._env_.REACT_APP_BROKER_URL).toString();
+
+        // uncomment for deployment
+        return elasticsearchURL;
     }
 
     handleDrawerOpen = () => {
@@ -252,7 +260,6 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.setBrokerURL();
         this.setState({
             resource: window.localStorage.getItem("resource")
         })
@@ -268,38 +275,11 @@ class App extends React.Component {
         let logo = <Link style={{ textDecoration: 'none' }} to="/">
             <h1>IDS</h1>
         </Link>
-        if (tenant === 'mobids') {
-            logo = <Link style={{ textDecoration: 'none' }} to="/">
-                <img src="./logo.png" alt="image" width='135px' />
-            </Link>
-            footerPos1 = <Box component="footer" className="footer" m={1}>
-                <Grid container spacing={3} className="footer-copyright">
-                    <Grid container item xs={12} className="footer-header">
-                        <h5 style={{ fontSize: '14px', paddingTop: '6px' }}>{this.renderMainTitle(this.tenant)}</h5>
-                        <p style={{ fontSize: '10px', textAlign: 'center' }}>International Data Spaces</p>
-                    </Grid>
-                    <Grid container>
-                        <Grid className="footer-mail" container item xs={12} lg={12} md={12} >
-                            <a href="https://www.iais.fraunhofer.de/.org/" style={{ fontSize: '10px' }}>© {new Date().getFullYear()}&nbsp;Fraunhofer IAIS</a>
+        let hasDrawer = this.tenant !== 'mobids'
 
-                        </Grid>
-                        <Grid className="footer-mail" container item xs={12} lg={12} md={12} >
-                            <a href="mailto:contact@ids.fraunhofer.de" style={{ fontSize: '10px' }}>contact@ids.fraunhofer.de</a>
-                        </Grid>
-                    </Grid>
-                    <Grid container >
-                        <Grid className="footer-privacy" container item xs={12} lg={12} md={12} style={{ marginTop: '10px' }}>
-                            <Link to="/data-protection" style={{ fontSize: '10px' }}>Data Protection Policy</Link>
-                        </Grid>
-                        <Grid className="footer-privacy" container item xs={12} lg={12} md={12}>
-                            <Link to="/imprint" style={{ fontSize: '10px' }}>Imprint</Link>
-                        </Grid>
-                        <Grid className="footer-mail" container item xs={12} lg={12} md={12}  >
-                            <p style={{ fontSize: '10px' }}>  Last Modified: {new Date(document.lastModified).getDate() + "." + parseInt(new Date(document.lastModified).getMonth() + 1) + "." + new Date(document.lastModified).getFullYear()}</p>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Box>
+        if (tenant === 'mobids') {
+            this.state.open = false
+            footerPos2 = <Footer />
         }
         else {
             footerPos2 = <Box component="footer" className="footer" m={2}>
@@ -308,9 +288,7 @@ class App extends React.Component {
                         <h5 style={{ fontSize: '14px', paddingTop: '6px' }}>{this.renderMainTitle(this.tenant)}</h5>
                         <p style={{ fontSize: '10px', textAlign: 'left' }}>International Data Spaces</p>
                     </Grid>
-                    <Grid className="footer-mail" container item xs={6} lg={6} md={6} >
-                        <a href="mailto:contact@ids.fraunhofer.de" style={{ fontSize: '10px' }}>contact@ids.fraunhofer.de</a>
-                    </Grid>
+                   
                     <Grid className="footer-mail" container item xs={6} lg={6} md={6} >
                         <a href="https://www.iais.fraunhofer.de/.org/" style={{ fontSize: '10px' }}>© {new Date().getFullYear()}&nbsp;Fraunhofer IAIS</a>
                     </Grid>
@@ -329,67 +307,78 @@ class App extends React.Component {
             </Box>
         }
 
+        let drawer = <Drawer
+            variant="persistent"
+            classes={{
+                paper: clsx(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+            }}
+            open={this.state.open}>
+            <div className={classes.toolbarIcon} >
+                {logo}
+            </div>
+            <SidebarList tenant={this.tenant} />
+            {footerPos1}
+        </Drawer>
+
+        let defaultAppbar = <AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift, this.tenant === 'mobids' && classes.appBarMDS)}>
+        <Toolbar className={classes.toolbar}>
+            <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={this.state.open ? this.handleDrawerClose : this.handleDrawerOpen}
+                className={hasDrawer ? classes.menuButton : classes.menuButtonHidden}
+            >
+                <MenuIcon />
+            </IconButton>
+
+            <div color="inherit" className={classes.logo}>
+                <div className={classes.titles}>
+                    <h3 style={{ color: '#808080' }}>{this.renderMainTitle(this.tenant)}</h3>
+                    <h3 style={{ fontWeight: 'bold', marginLeft: '10px', color: '#808080' }}>{this.renderSubTitle(this.props.location.pathname)}</h3>
+                </div>
+            </div>
+
+            <LoginOrLogout />
+        </Toolbar>
+    </AppBar>
+
         return (
             <Provider store={store}>
-                <div className={"theme-" + this.tenant}>
+                <div className={clsx("theme-" + this.tenant, {['home']: this.props.location.pathname === '/'})}>
                     <CssBaseline />
-                    <AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
-                        <Toolbar className={classes.toolbar}>
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                onClick={this.state.open ? this.handleDrawerClose : this.handleDrawerOpen}
-                                className={classes.menuButton}
-                            >
-                                <MenuIcon />
-                            </IconButton>
 
-                            <div color="inherit" className={classes.logo}>
-                                <div className={classes.titles}>
-                                    <h3 style={{ color: '#808080' }}>{this.renderMainTitle(this.tenant)}</h3>
-                                    <h3 style={{ fontWeight: 'bold', marginLeft: '10px', color: '#808080' }}>{this.renderSubTitle(this.props.location.pathname)}</h3>
-                                </div>
+                    { this.tenant === 'mobids' ? <ToolbarList /> : defaultAppbar }
 
-                            </div>
-
-                            <LoginOrLogout />
-                        </Toolbar>
-                    </AppBar>
-                    <Drawer
-                        variant="persistent"
-                        classes={{
-                            paper: clsx(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-                        }}
-                        open={this.state.open}
-                    >
-                        <div className={classes.toolbarIcon} >
-
-                            {logo}
-
-                        </div>
-                        <SidebarList tenant={this.tenant} />
-                        {footerPos1}
-                    </Drawer>
-                    <main className={clsx(classes.content, {
+                    { hasDrawer ? drawer : '' }
+                    <main className={clsx({
+                        [classes.content]: this.tenant !== 'mobids',
                         [classes.contentShift]: this.state.open
                     })}>
-                        <div className={classes.appBarSpacer} />
-                        <Container maxWidth="lg" className={classes.container}>
-                            <Route path="/browse">
+                        <div className={clsx(classes.appBarSpacer, 'appBarSpacer')} />
+                        <Container maxWidth="xl" className={classes.container}>
+                            
+                            
+                        { this.tenant == 'mobids' ? <Route exact path="/">
+                                <MDSHome />
+                            </Route> : ""}
+                            { this.tenant == 'eis' ? <Route path="/browse">
                                 <Dashboard />
-                            </Route>
+                            </Route> : ""}
                             <Route path="/connector/:resID">
-                                {
-                                    <BrokerConnectorViewComponent {...this.props} es_url={this.brokerURL} showBackButton={true} />
-
-                                }
+                                <Grid container>
+                                    <Grid item md={3} xs={12}>
+                                    </Grid>
+                                    <Grid item lg={6} md={9} xs={12}>
+                                        <BrokerConnectorViewComponent {...this.props} es_url={this.getBrokerURL()} showBackButton={false} />
+                                    </Grid>
+                                </Grid>
                             </Route>
                             <Route exact path="/connector">
                                 <ReactiveBase
                                     app={this.getElasticSearchIndex(this.tenant)}
                                     credentials="null"
-                                    url={this.brokerURL}
+                                    url={this.getBrokerURL()}
                                     analytics
                                 >
                                     {
@@ -398,15 +387,19 @@ class App extends React.Component {
                                 </ReactiveBase>
                             </Route>
                             <Route path="/resources/:resID">
-                                {
-                                    <BrokerResourceView {...this.props} es_url={this.brokerURL} showBackButton={true} />
-                                }
+                                <Grid container>
+                                    <Grid item md={3} xs={12}>
+                                    </Grid>
+                                    <Grid item lg={6} md={9} xs={12}>
+                                        <BrokerResourceView {...this.props} es_url={this.getBrokerURL()} showBackButton={false} />
+                                    </Grid>
+                                </Grid>
                             </Route>
                             <Route exact path="/resources">
                                 <ReactiveBase
                                     app="resources"
                                     credentials="null"
-                                    url={this.brokerURL}
+                                    url={this.getBrokerURL()}
                                     analytics
                                 >
                                     <SearchMDMResources {...this.props} />
@@ -416,7 +409,7 @@ class App extends React.Component {
                                 <ReactiveBase
                                     app={this.getElasticSearchIndex(this.tenant)}
                                     credentials="null"
-                                    url={this.brokerURL}
+                                    url={this.getBrokerURL()}
                                     analytics
                                 >
                                     {
@@ -427,9 +420,12 @@ class App extends React.Component {
                             <Route path="/data-protection">
                                 <DataPrivacyView />
                             </Route>
-                            <Route path="/imprint">
+                            { this.tenant !== 'mobids' ? <Route path="/imprint">
                                 <ImprintView />
-                            </Route>
+                            </Route> : ""}
+                            { this.tenant == 'mobids' ? <Route path="/imprint">
+                                <ImprintViewMDS />
+                            </Route> : ""}
                             <Route path="/maintainer">
                                 <Maintainer />
                             </Route>
@@ -442,6 +438,7 @@ class App extends React.Component {
                             <Route path="/admin">
                                 <Adminx />
                             </Route>
+                            
                         </Container>
                         {footerPos2}
                     </main>

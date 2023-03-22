@@ -1,0 +1,197 @@
+@font-face {
+    font-family: "Soehne";
+    src: url(../assets/fonts/soehne-web-buch.woff2);
+}
+
+@font-face {
+    font-family: "Soehne";
+    src: url(../assets/fonts/soehne-web-kraftig.woff2);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Soehne";
+    src: url(../assets/fonts/soehne-web-leicht.woff2);
+    font-weight: 100;
+}
+
+.theme-mobids * {
+    font-family: 'Soehne' !important;
+}
+
+body {
+    background-color: white !important;
+}
+
+.theme-mobids.home {
+    background-image: url(../assets/home-shape.svg);
+    background-repeat: no-repeat;
+    background-size: 500px;
+}
+
+@media screen and (max-width: 500px) {
+    #root .theme-mobids.home {
+        background-size: contain;
+    }
+}
+
+.theme-mobids .appBarSpacer {
+    min-height: 0px;
+}
+
+.theme-mobids nav {
+    flex-grow: 1;
+}
+
+nav .toolbar-list {
+    display: flex;
+    padding-top: 0;
+}
+
+.theme-mobids nav .Mui-selected a > p {
+    font-weight: bold;
+}
+
+.theme-mobids .appbar .login-button button {
+    text-transform: none;
+    color: black;
+    background-color: #FFFF00;
+    font-size: 18px;
+    padding: 10px 30px;
+    margin-bottom: 5px;
+    font-weight: normal;
+    border-radius: 32px
+}
+
+.theme-mobids footer .footer-header button {
+    background: none;
+    text-transform: none;
+    color: #FFFF00;
+    font-weight: normal;
+}
+
+.theme-mobids footer .footer-header button::before {
+    content: '>';
+    margin-right: 5px;
+}
+
+nav .toolbar-list .MuiListItem-root {
+    width: auto
+}
+
+nav .toolbar-list .MuiListItem-root.Mui-selected, nav.toolbar-list .MuiListItem-root:hover {
+    background: none;
+}
+
+header .logo-wrapper {
+    min-width: 500px
+}
+
+header .menu-button {
+    margin-left: 12px;
+    align-self: flex-start;
+    flex-grow: 1;
+    text-align: end;
+    display: none;
+}
+
+#root > .theme-mobids {
+    display: block;
+}
+
+.theme-mobids .MuiToolbar-root {
+     flex-wrap: wrap;
+}
+
+.theme-mobids footer .footer-copyright {
+    max-width: 1100px;
+    margin: auto !important;
+    font-size: 16px;
+    padding: 70px 20px;
+}
+
+.theme-mobids footer .footer-copyright .MuiListItem-root {
+    justify-content: flex-start !important;
+}
+
+.theme-mobids footer .footer-right {
+    text-align: right;
+}
+
+.theme-mobids footer .footer-right .modified {
+    color: #FFFF00;
+}
+
+.theme-mobids footer .footer-right .copyright {
+    font-size: 15px;
+    color: #8F8F8F;
+}
+
+nav .mobile-only {
+    display: none;
+}
+
+.theme-mobids nav .menu-item.expandable {
+    cursor: pointer;
+}
+
+.theme-mobids nav .menu-item.expandable::after {
+    content: "";
+    display: block;
+    float: right;
+    background: url("../assets/icons/arrow-right-mobile.svg") no-repeat;
+    width: 18px;
+    height: 18px;
+    margin-top: 5px;
+}
+
+.theme-mobids nav .menu-item.expandable.expanded::after {
+    background: url("../assets/icons/arrow-down-mobile.svg") no-repeat;
+    margin-top: 10px;
+}
+
+.theme-mobids nav .menu-item a {
+    text-decoration: none;
+    color: black;
+}
+
+@media screen and (max-width: 800px) {
+    header .menu-button {
+        display: block;
+    }
+
+    header .MuiToolbar-root {
+        display: block;
+    }
+
+    header .logo-wrapper {
+        min-width: 100%;
+        display: flex;
+        margin-bottom: 60px;
+    }
+
+    nav .toolbar-list .MuiListItem-root {
+        display: block;
+    }
+
+    nav .toolbar-list {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 20px;
+    }
+
+    .search-icon.hidden, .mobile-hidden {
+        display: none !important;
+    }
+
+    nav .mobile-only {
+        display: block;
+    }
+
+    .menu-item {
+        font-size: 22px;
+        font-weight: bold;
+        padding: 12px 0;
+    }
+}

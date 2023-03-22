@@ -5,10 +5,12 @@ import {
 } from "@appbaseio/reactivesearch";
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
-import { SearchBroker, BrokerConnectorView, BrokerFilter } from "./ConnectorBroker";
+import { SearchBroker, BrokerFilter } from "./ConnectorBroker";
 import { SearchParis, ParisConnectorView, ParisFilter } from "./ConnectorParis";
-import { propertyArray } from '../propertyArray';
 // import Query from "../Query.jsx";
+import '../css/ConnectorsList.css'
+
+import SearchIcon from '../assets/icons/search.svg'
 
 export default class SearchConnectors extends React.Component {
     constructor(props) {
@@ -40,6 +42,12 @@ export default class SearchConnectors extends React.Component {
         });
     }
 
+    setResultSize = (size) => {
+        this.setState({
+            resultSize: size
+        })
+    }
+
     render() {
         let tenant = process.env.REACT_APP_TENANT || 'eis';
 
@@ -49,10 +57,8 @@ export default class SearchConnectors extends React.Component {
             let obj = this.state.currentConnector;
             if (name === 'paris') {
                 return <ParisConnectorView updateCurrentConnector={this.updateCurrentConnector} connector={obj} />;
-            } else if (name === 'eis') {
-                return <BrokerConnectorView updateCurrentConnector={this.updateCurrentConnector} connector={obj} />;
-            } else
-                return <BrokerConnectorView updateCurrentConnector={this.updateCurrentConnector} connector={obj} />;
+            }
+            // for mobids: Connector is now only callable using Links and Routing
         }
 
         const renderTenant = (name) => {
@@ -62,11 +68,11 @@ export default class SearchConnectors extends React.Component {
                 )
             } else if (name === 'eis') {
                 return (
-                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector} />
+                    <SearchBroker  />
                 )
             } else {
                 return (
-                    <SearchBroker updateCurrentConnector={this.updateCurrentConnector} />
+                    <SearchBroker />
                 )
             }
         }
@@ -100,51 +106,66 @@ export default class SearchConnectors extends React.Component {
         let currentConnector = this.state.currentConnector;
         let propsFromApp = this.props;
 
+        let filterSection = <Grid item xl={3} md={4} xs={12}>
+            <Card className="filter-container">
+                {
+                    renderFilterTenant(tenant)
+                }
+            </Card>
+            {/* <Annotate /> */}
+            <br />
+            {
+                // renderQueryExpansion(tenant)
+            }
+        </Grid>
+
         return (
             <div className="connectors-list">
                 {
                     Object.entries(currentConnector).length === 0 ?
                         <React.Fragment>
-                            <DataSearch
-                              componentId="search"
-                              dataField={['connector.title','connector.title_en','connector.title_de','connector.description','connector.description_de', 'participant.title', 'participant.description','participant.corporateHompage']}
-                              URLParams={true}
-                              queryFormat="or"
-                                style={{
-                                    marginBottom: 20
-                                }}
-                                value={this.state.value}
-                                autosuggest={true}
-                                showClear={true}
-                                onChange={this.handleSearch}
-                                onValueChange={
-                                    function (value) {
-                                        if (propsFromApp.location.pathname.indexOf('connector') === -1) {
-                                            propsFromApp.history.push("/connector");
-                                        }
-                                    }
-                                }
-                            // title="Search for Connectors"
-                            />
-                            <SelectedFilters />
                             <Grid container>
-                                <Grid item className="conn-list" lg={9} md={9} xs={12}>
-                                    {
-                                        renderTenant(tenant)
-                                    }
-                                </Grid>
-                                <Grid item lg={3} md={3} xs={12}>
-                                    <Card>
-                                        {
-                                            renderFilterTenant(tenant)
+
+                                {/* Filter section on the left-side onnly for mobids */}
+                                {tenant == 'mobids' ? filterSection : ''}
+                                
+                                <Grid item
+                                xl={tenant == 'mobids' ? 6 : 9}
+                                md={tenant == 'mobids' ? 8 : 9} xs={12}
+                                className="search-column-container">
+                                    
+                                <DataSearch
+                                    componentId="search"
+                                    dataField={['connector.title','connector.title_en','connector.title_de','connector.description','connector.description_de', 'participant.title', 'participant.description','participant.corporateHompage']}
+                                    URLParams={true}
+                                    queryFormat="or"
+                                    icon={<img src={SearchIcon} className="search-icon" />}
+                                    className="data-search"
+                                        value={this.state.value}
+                                        autosuggest={true}
+                                        showClear={true}
+                                        onChange={this.handleSearch}
+                                        onValueChange={
+                                            function (value) {
+                                                if (propsFromApp.location.pathname.indexOf('connector') === -1) {
+                                                    propsFromApp.history.push("/connector");
+                                                }
+                                            }
                                         }
-                                    </Card>
-                                    {/* <Annotate /> */}
-                                    <br />
-                                    {
-                                        // renderQueryExpansion(tenant)
-                                    }
+                                    // title="Search for Connectors"
+                                    />
+                                    <SelectedFilters />
+
+                                    <div className="conn-list">
+                                        {
+                                            renderTenant(tenant)
+                                        }
+                                    </div>
                                 </Grid>
+
+                                {/* Filter section on the left-side only for mobids */}
+                                {tenant != 'mobids' ? filterSection : ''}
+
                             </Grid>
                         </React.Fragment>
                         :

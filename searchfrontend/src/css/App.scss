@@ -41,8 +41,8 @@ body2 {
 
 .MuiAppBar-colorPrimary p {
     margin: 0;
-    margin-top: 8px;
-    color: gray !important;
+    //margin-top: 8px;
+    //color: gray !important;
 }
 
 .MuiAppBar-colorPrimary h4 {
@@ -223,7 +223,7 @@ body2 {
 .MuiContainer-root {
     padding-left: 0 !important;
     padding-right: 0 !important;
-    max-width: 1769px !important;
+    //max-width: 1769px !important;
 }
 
 .MuiPaper-root {
@@ -235,7 +235,7 @@ body2 {
 }
 
 .conn-list>div {
-    margin: 20px !important;
+    margin: 0 20px;
 }
 
 .conn-list a.active {
@@ -276,7 +276,7 @@ main {
     */
 footer {
     @include themify($themes) {
-        background-color: themed('primaryColor') !important;
+        background-color: themed('footerColor') !important;
     }
 
     color: white;
@@ -288,7 +288,7 @@ footer {
         margin: 0;
 
         @include themify($themes) {
-            background-color: themed('primaryColor') !important;
+            background-color: themed('footerColor') !important;
         }
 
         padding: 10px;

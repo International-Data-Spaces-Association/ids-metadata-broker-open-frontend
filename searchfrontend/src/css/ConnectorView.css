@@ -1,0 +1,99 @@
+.resource-view .connector-title {
+    font-weight: bold;
+    font-size: 32px;
+    margin-bottom: 28px;
+}
+
+.resource-view div .attr-title {
+    font-weight: bold;
+    margin-top: 16px;
+}
+
+.resource-view .attr-content {
+    color: #707070;
+}
+
+.resource-view .attr-content > a {
+    color: #707070;
+    text-decoration: underline;
+}
+
+.resource-view div.attr-description > .attr-content {
+    color: black;
+}
+
+.resource-view .main-container > div {
+    margin: 5px 0
+}
+
+.resource-view .rounded-borders {
+    padding: 20px 0;
+    margin: 20px 0;
+    border-color: #707070;
+}
+
+.resource-view .secondary-view {
+    margin: 30px 0;
+}
+
+.resource-view .resource-link {
+    display: block;
+    margin: 12px 0;
+}
+
+.resource-view .resource-link::after {
+    content: "";
+    display: inline-block;
+    background: url("../assets/icons/link-icon.svg") no-repeat;
+    width: 8px;
+    height: 8px;
+    margin-left: 6px;
+    margin-bottom: 3px;
+}
+
+.theme-eis button.expandButton {
+    border-radius: 0;
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    display: block;
+    color: black;
+    background-color: #4082db;
+    text-align: left;
+    text-transform: none;
+    box-shadow: none;
+    margin-bottom: 14px;
+}
+
+.theme-mobids button.expandButton {
+
+    border-radius: 0;
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    display: block;
+    color: black;
+    background-color: #FFFF00;
+    text-align: left;
+    text-transform: none;
+    box-shadow: none;
+    margin-bottom: 14px;
+}
+
+button.expandButton::before {
+    content: "";
+    display: block;
+    float: left;
+    background: url("../assets/icons/show-more.svg") no-repeat;
+    width: 20px;
+    height: 20px;
+    margin: 4px 16px;
+}
+
+button.expandButton.expanded::before {
+    background: url("../assets/icons/show-less.svg") no-repeat;
+}
+
+button.expandButton.expanded {
+    background-color: #F7F7F7;
+}

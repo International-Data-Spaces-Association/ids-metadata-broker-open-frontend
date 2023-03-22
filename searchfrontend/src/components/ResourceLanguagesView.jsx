@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-
+import { elasticsearchURL } from '../urlConfig';
 import { getCntResourcesByLanguage } from '../helpers/sparql/connectors';
 
 
@@ -47,7 +47,7 @@ class ResourceLanguagesView extends Component {
                 })
         } else {
             axios
-                .post('/es/registrations/_msearch?',
+            .post(elasticsearchURL + '/registrations/_msearch?',
                     '{"preference":"list-6"}\n{"query":{"match_all":{}},"size":0,"aggs":{"catalog.resources.language.keyword":{"terms":{"field":"catalog.resources.language.keyword","size":100,"order":{"_count":"desc"}}}}}\n'
                     , {
                         headers: {

@@ -1,0 +1,57 @@
+[
+    {
+        "title": "Traffic Information",
+        "icon": "categories/01_Traffic_Information.svg",
+        "key": "Traffic Information"
+    },
+    {
+        "title": "Roadworks & Road Conditions",
+        "icon": "categories/02_Roadworks_Road_conditions.svg",
+        "key": "Roadworks & Road Conditions"
+    },
+    {
+        "title": "Traffic Flow Information",
+        "icon": "categories/03_Traffic_Flow_Information.svg",
+        "key": "Traffic Flow Information"
+    },
+    {
+        "title": "Parking Information",
+        "icon": "categories/04_Parking-Information.svg",
+        "key": "Parking Information"
+    },
+    {
+        "title": "Fuel Price & Electromobility",
+        "icon": "categories/05_Fuel-Price-and-Electromobility.svg",
+        "key": "Fuel Price & Electromobility"
+    },
+    {
+        "title": "Traffic Signs & Speed Information",
+        "icon": "categories/06_Traffic_Signs_and_Speed_Information.svg",
+        "key": "Traffic Signs & Speed Information"
+    },
+    {
+        "title": "Weather Information",
+        "icon": "categories/07_Weather_Information.svg",
+        "key": "Weather Information"
+    },
+    {
+        "title": "Public Transport Information",
+        "icon": "categories/08_Public_Transport_Information.svg",
+        "key": "Public Transport Information"
+    },
+    {
+        "title": "Car & Bike Sharing",
+        "icon": "categories/09_Car_und_Bike_Sharing.svg",
+        "key": "Car & Bike Sharing"
+    },
+    {
+        "title": "Infrastructure",
+        "icon": "categories/10_Infrastructure.svg",
+        "key": "Infrastructure"
+    },
+    {
+        "title": "Various",
+        "icon": "categories/11_Miscellaneous.svg",
+        "key": "Various"
+    }
+]

@@ -1,0 +1,324 @@
+@media screen and (min-width: 800px) {
+    .theme-mobids .connectors-list {
+        margin-top: 60px
+    }
+}
+
+.theme-mobids .search-container > div {
+    margin-top: 15px;
+}
+
+.theme-mobids .search-container {
+    margin-top: -15px;
+}
+
+.theme-mobids .search-column-container {
+    padding-left: 30px;
+}
+
+.theme-mobids #search-downshift-input {
+    background-color: unset !important;
+    border-radius: 32px;
+    padding: 14px 55px;
+    border: 1px solid #B9B9B9;
+}
+
+.theme-mobids #search-downshift-input::placeholder {
+    color: black;
+    opacity: 1;
+}
+
+.theme-mobids #search-downshift-input:-ms-input-placeholder {
+    color: black;
+    opacity: 1;
+}
+
+.theme-mobids #search-downshift-input::-ms-input-placeholder {
+    color: black;
+    opacity: 1;
+}
+
+.theme-mobids .search-icon, .theme-mobids .cancel-icon {
+    fill: black !important;
+    height: 14px;
+    margin-bottom: 3px;
+    margin-left: 4px;
+    margin-right: 4px
+}
+
+.theme-mobids .search-icon {
+    height: 23px;
+    margin-left: 20px;
+    margin-top: 2px;
+}
+
+.theme-mobids .connector-content {
+    padding: 35px 20px;
+}
+
+.theme-mobids .connector-content .connector-description {
+    margin: 25px 0
+}
+
+.theme-mobids .data-search {
+    margin-bottom: 8px;
+}
+
+.theme-mobids .results {
+    font-size: 13px;
+    color: #8F8F8F;
+    margin: 4px 12px
+}
+
+.theme-mobids .connector-content h2 {
+    margin-bottom: 6px;
+    font-size: 21px
+}
+
+.theme-mobids .conn-list {
+    margin-top: 70px;
+}
+
+.pagination {
+    margin: 60px 0;
+}
+
+.theme-eis .conn-list a > div.MuiCard-root:hover {
+    background-color: #4082db;
+}
+
+.theme-eis .pagination button {
+    background-color: #4082db;
+    text-transform: none;
+    width: 100px;
+    margin: 0 20px;
+}
+
+.theme-mobids .conn-list a > div.MuiCard-root:hover {
+    background-color: #FFFF00;
+}
+
+.theme-mobids .pagination button {
+    background-color: #FFFF00;
+    text-transform: none;
+    width: 100px;
+    margin: 0 20px;
+}
+
+.theme-mobids .pagination button[disabled] {
+    background-color: #E0E0E0;
+}
+
+.theme-mobids hr {
+    background-color: black;
+}
+
+.theme-mobids .filter-container {
+    padding: 0 30px;
+    box-shadow: none;
+    color: #8F8F8F;
+    margin-bottom: 20px;
+}
+
+.theme-mobids .filter-container > div {
+    margin: 10px 0;
+}
+
+.theme-mobids .filter-container h2 {
+    color: black;
+    font-size: 18px;
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+
+.theme-mobids .filter-container .nolimits ul {
+    max-height: unset;
+    margin-top: 20px;
+    padding-left: 10px;
+}
+
+.theme-mobids .filter-container ul label::before {
+    border-color: #B9B9B9;
+    border-radius: 3px;
+    background-color: white;
+    box-shadow: none;
+    margin-right: 12px;
+    min-width: 16px;
+}
+
+.theme-mobids .filter-container input:checked + label::after {
+    border-color: #000;
+    border-width: 0 0px 3px 3px;
+}
+
+.theme-mobids .filter-container ul > li {
+    margin: 4px 0;
+}
+
+.theme-mobids .filter-container ul label:hover,
+.theme-mobids .filter-container input:hover + label::before,
+.theme-mobids .filter-container input:checked + label {
+    color: #000000;
+}
+
+.theme-mobids .filter-container .expandable h2 {
+    cursor: pointer;
+}
+
+.theme-mobids .filter-container .expandable > ul,
+.theme-mobids .filter-container .expandable > input {
+    display: none;
+    padding-left: 10px;
+}
+
+.theme-mobids .filter-container .expandable.expanded > ul {
+    display: block;
+    max-height: 400px;
+    margin-top: 15px;
+}
+
+.theme-mobids .filter-container .expandable.expanded > input {
+    display: block;
+    background-color: unset !important;
+    border-radius: 32px;
+    padding: 5px 15px;
+    border: 1px solid #B9B9B9;
+    min-height: unset;
+}
+
+.theme-mobids .filter-container .expandable h2::after {
+    content: "";
+    display: block;
+    float: right;
+    background: url("../assets/icons/filter-open.svg") no-repeat;
+    width: 13px;
+    height: 13px;
+    margin-top: 5px;
+}
+
+.theme-mobids .filter-container .expandable.expanded h2::after {
+    background: url("../assets/icons/filter-close.svg") no-repeat;
+}
+
+.advanced-filter {
+    margin: 5px;
+}
+
+.advanced-filter button {
+    border-radius: 32px;
+    padding: 12px 18px;
+    font-size: 16px;
+    color: #707070;
+    border-color: #B9B9B9;
+}
+
+.theme-eis .advanced-filter button[aria-expanded=true],
+.theme-eis .advanced-filter button:hover {
+    background-color: #4082db;
+}
+
+.advanced-filter button[aria-expanded=true],
+.advanced-filter button:hover {
+    background-color: #FFFF00;
+}
+
+.advanced-filter-container {
+    margin-top: 30px;
+}
+
+.advanced-filter div > ul {
+    width: unset;
+    border: 1px solid #B9B9B9;
+    border-radius: 18px;
+    box-shadow: 0px 3px 6px #00000029;
+    color: #707070;
+    min-width: 250px;
+    padding: 12px;
+    background: #FAFAFA;
+}
+
+.advanced-filter div > ul > li {
+    background-color: #FAFAFA !important;  
+    font-size: 13px;
+}
+
+.advanced-filter div > ul > li span::after {
+    border-color: #707070;
+}
+
+.theme-mobids .selected-filters {
+    margin-top: 30px;
+}
+
+.theme-mobids .selected-filters > a {
+    border-radius: 32px;
+    color: #707070;
+    background-color: #E0E0E0;
+    padding: 5px 14px;
+}
+
+.theme-mobids .selected-filters > a span:first-of-type {
+    margin-right: 20px;
+}
+
+.theme-mobids .selected-filters > a span:last-of-type {
+    border-left: unset;
+}
+
+.theme-eis .advanced-button, .theme-mobids .advanced-button:hover {
+    text-transform: none;
+    color: black;
+    background-color: #4082db;
+    font-size: 16px;
+    padding: 10px 30px;
+    font-weight: normal;
+    border-radius: 32px;
+    width: 100%;
+    height: 100%;
+}
+
+.theme-mobids .advanced-button, .theme-mobids .advanced-button:hover {
+    text-transform: none;
+    color: black;
+    background-color: #FFFF00;
+    font-size: 16px;
+    padding: 10px 30px;
+    font-weight: normal;
+    border-radius: 32px;
+    width: 100%;
+    height: 100%;
+}
+
+.theme-mobids .advanced-button.expanded {
+    background-color: unset;
+    border: 1px solid #B9B9B9;
+}
+
+.theme-mobids .advanced-button::before {
+    content: "";
+    display: block;
+    float: left;
+    background: url("../assets/icons/arrow-right-mobile.svg") no-repeat;
+    width: 12px;
+    height: 12px;
+    margin-right: 2px;
+}
+
+.theme-mobids .advanced-button.expanded::before {
+    background: url("../assets/icons/filter-close.svg") no-repeat;
+}
+
+.connector-content-container {
+    margin-top: 20px;
+}
+
+.connector-content-container .link-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.connector-links .link-content {
+    color: #8F8F8F;
+    font-size: 13px;
+}

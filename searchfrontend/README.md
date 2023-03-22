@@ -4,6 +4,22 @@
 - Run the other supporting components in the background. See `../docker/composefiles/frontend-dev`
 - Install dependencies: `npm install`
 - Run the development server: `npm run start`
+- For the local Development Mode, open url-config.js and uncomment the Development Option for the    elasticsearchURL
+
+## Deployment
+- make sure that you are using the Deployment Option in the `url-config.js` File for the elasticsearchURL
+- Create a build Folder: `npm run build`
+- Create a Docker Image: `docker build *NameofImage*`
+- Optional: tag and push your image to a Registry: `docker tag`/ `docker push`
+
+## Tenant
+currently, there are 2 themes fully implemented:
+- eis: the `Fraunhofer IAIS.EIS` Version with a blue design
+- mobids: the customized Version for the `Mobility Data Space`
+
+you can switch easily between these designs by changing the `tenant` here:
+- `App.jsx`
+- `SearchMDMResources.jsx`
 
 ## Redux
 
@@ -65,9 +81,15 @@ Currently use mock-up data to present a dashboard page.
 
 Available for all users.
 
-### Query (Sidebar)
+### Connectors (Sidebar)
 
-The query page will show all registered connectors will show up (using reactivesearch). Can also use the search bar to find certain connector. In the registered connector page, the metadata information will be displayed.
+The connectors page will show all registered connectors (using reactivesearch). For searching a specific connector, you can filter it for specific Keywords, Publisher or Connector Security Profile. In the registered connector page, the metadata information will be displayed.
+
+Available for all users.
+
+### Resources (Sidebar)
+
+The resources page will show all registered resources (using reactivesearch). For searching a specific resource, you can filter it for Data Publisher, Data Owner or Keywords. In the registered resource page, the metadata information will be displayed.
 
 Available for all users.
 
@@ -81,7 +103,7 @@ Available for admin and standard users.
 
 The admin page will show the details of all registered users in broker. The admin has the following actions:
 
--  Add new user
+- Add new user
 - Update registered user info
 - Delete user
 
