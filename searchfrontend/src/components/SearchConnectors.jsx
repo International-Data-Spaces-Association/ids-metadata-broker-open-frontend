@@ -51,9 +51,7 @@ class SearchConnectors extends React.Component {
     }
 
     render() {
-        const { isAuthenticated, user } = this.props.auth;
-
-        let tenant = process.env.REACT_APP_TENANT || 'mobids';
+        let tenant = process.env.REACT_APP_TENANT || 'eis';
 
         tenant = tenant.toLowerCase();
 

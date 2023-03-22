@@ -51,6 +51,10 @@ services:
     image: mongo:latest
     volumes:
       - db:/data/db
+      - "27017"
+
+  mongodb-handler:
+    image: registry.gitlab.cc-asp.fraunhofer.de/eis-ids/broker/mongodb-handler
     ports:
       - "27017:27017"
 

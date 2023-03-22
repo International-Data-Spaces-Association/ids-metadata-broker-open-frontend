@@ -31,27 +31,18 @@ export function BrokerFilter(props) {
                 showSearch={true}
                 showCount={false}
                 title="Keyword"
+                filterLabel="Keyword"
                 className="expandable expanded"
                 URLParams={true}
             />
             <Divider />
             <MultiList
                 componentId="list-3"
-                dataField="catalog.resources.publisher.keyword"
+                dataField="catalog.resources.publisherAsUri.keyword"
                 showSearch={true}
                 showCount={false}
                 title="Publisher"
-                className="expandable"
-                URLParams={true}
-            />
-
-            <Divider />
-            <MultiList
-                componentId="list-6"
-                dataField="catalog.resources.language.keyword"
-                showSearch={true}
-                showCount={false}
-                title="Resource Language"
+                filterLabel="Publisher"
                 className="expandable"
                 URLParams={true}
             />
@@ -62,6 +53,7 @@ export function BrokerFilter(props) {
                 showSearch={true}
                 showCount={false}
                 title="Connector Security Profile"
+                filterLabel="Security Profile"
                 className="expandable"
                 URLParams={true}
             />
@@ -125,7 +117,7 @@ export function SearchBroker(props) {
                                             Curator
                                         </Typography>
                                         <Typography component="p" className="link-content">
-                                            {provider.curator}
+                                            {provider.curatorAsUri}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={6}>
@@ -133,7 +125,7 @@ export function SearchBroker(props) {
                                             Maintainer
                                         </Typography>
                                         <Typography component="p" className="link-content">
-                                            {provider.maintainer}
+                                            {provider.maintainerAsUri}
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -160,13 +152,13 @@ export function SearchBroker(props) {
                     pagination={true}
                     URLParams={true}
                     react={{
-                        and: ["search", "list-1", "list-3", "list-2", "list-4", "list-6"]
+                        and: ["search", "list-1", "list-3", "list-2", "list-4"]
                     }
                     }
                     renderItem={renderBrokerData}
                     renderResultStats={renderResultStats}
                     renderPagination={renderPagination}
-                    size={4}
+                    size={10}
                     style={{
                         margin: 0
                     }}
@@ -204,5 +196,5 @@ export function renderPagination({pages, totalPages, currentPage, setPage, fragm
 }
 
 export function renderResultStats(stats) {
-    return <p className="results">{stats.numberOfResults} Results</p>
+    return <p className="results">{stats.numberOfResults} {stats.numberOfResults == 1 ? "Result" : "Results"}</p>
 }

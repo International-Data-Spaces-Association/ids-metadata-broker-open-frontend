@@ -18,13 +18,13 @@ class Footer extends Component {
                     <Grid className="footer-mail" container item xs={6} lg={3} md={3} >
                         <List>
                             <ListItem button>
-                                <Link to="/imprint">Imprint</Link>
+                                <Link to="/imprint">Legal Notice</Link>
                             </ListItem>
                             <ListItem button>
-                                <a href="mailto:contact@ids.fraunhofer.de">Contact</a>
+                                <a href="https://mobility-dataspace.eu/#c317" target="_blank">Contact</a>
                             </ListItem>
                             <ListItem button>
-                                <Link to="/data-protection">Data Protection Policy</Link>
+                                <a href="https://mobility-dataspace.eu/privacy-policy">Data Protection Policy</a>
                             </ListItem>
                         </List>
                     </Grid>
@@ -34,7 +34,7 @@ class Footer extends Component {
                     <Grid className="footer-right" item xs={6} lg={3} md={3}  >
                         <p className="modified">  Last Modified: {new Date(document.lastModified).getDate() + "." + parseInt(new Date(document.lastModified).getMonth() + 1) + "." + new Date(document.lastModified).getFullYear()}</p>
                         <p>&nbsp;</p>
-                        <p><a className="copyright" href="https://www.iais.fraunhofer.de/.org/">© {new Date().getFullYear()}&nbsp;Fraunhofer IAIS</a></p>
+                        <p>© {new Date().getFullYear()}&nbsp;Mobility Data Space</p>
                     </Grid>
 
                 </Grid>

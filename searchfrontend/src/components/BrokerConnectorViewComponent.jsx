@@ -19,20 +19,8 @@ export function BrokerConnectorViewComponent(props) {
         prepareResource();
     }, []); //the [] braces means to run it when the component is mounted/loaded
 
-    let targetURI = props.es_url
-    let selfURI = props.es_url
-   /* if (typeof (targetURI) !== 'undefined' && targetURI != null) {
-        if (targetURI.includes("/es")) {
 
-            targetURI = targetURI + "/es"
-        }
-        else {
-            selfURI = selfURI.substr(0, selfURI.length - 3)
-        }
-    }
-    else {
-        targetURI = "/es"
-    } */
+    let elasticsearchURL = props.es_url
 
     const token = useSelector(state => state.auth.token);
 
@@ -63,7 +51,7 @@ export function BrokerConnectorViewComponent(props) {
             }
             //find and get the respective validResourceId in Elastic search
 
-            axios.get(targetURI + "/registrations/_search?size=1000&pretty", {
+            axios.get(elasticsearchURL + "/registrations/_search?size=1000&pretty", {
                 data: {
                     query: {
                         term: {
@@ -99,22 +87,22 @@ export function BrokerConnectorViewComponent(props) {
     }
 
     function displayField(fieldLabel, fieldVal, col) {
-        if(!fieldVal)
+        if (!fieldVal)
             return ""
 
         return (
-            <BrokerAttribute col={col} 
+            <BrokerAttribute col={col}
                 label={fieldLabel}
                 value={fieldVal} />
         );
     }
 
     function displayURI(fieldLabel, fieldVal, col) {
-        if(!fieldVal)
+        if (!fieldVal)
             return ""
 
         return (
-            <BrokerAttributeUrl col={col} 
+            <BrokerAttributeUrl col={col}
                 label={fieldLabel}
                 value={fieldVal} />
         );
@@ -122,64 +110,64 @@ export function BrokerConnectorViewComponent(props) {
 
     return (
         <BrokerViewComponent
-        title={connector.title ? connector.title.join(", ") : "Unknown Connector"}
-        parentLink="/connector"
-        showBackButton={props.showBackButton}
-        showMore={
-            <Grid container>
-                {
-                    displayURI("Access URL", connector.accessUrl)
-                }
-                {
-                    displayField("Software Version", connector.connectorVersion)
-                }
-                {
-                    displayField("Security Profile", connector.securityProfile)
-                }
-                {
-                    connector.inboundModelVersions ? displayField("Inbound IDS Model Versions", connector.inboundModelVersions.join(", ")) : ""
-                }
-                {
-                    displayField("Outbound IDS Model Version", connector.outboundModelVersion)
-                }
-            </Grid>
-        }>
-                <Grid container className="main-container">
+            title={connector.title ? connector.title.join(", ") : "Unknown Connector"}
+            parentLink="/connector"
+            showBackButton={props.showBackButton}
+            showMore={
+                <Grid container>
                     {
-                        connector.description ? 
-                        <BrokerAttribute className="attr-description" col={12} 
+                        displayURI("Connector URI", connector.originURI)
+                    }
+                    {
+                        displayField("Software Version", connector.connectorVersion)
+                    }
+                    {
+                        displayField("Security Profile", connector.securityProfile)
+                    }
+                    {
+                        connector.inboundModelVersions ? displayField("Inbound IDS Model Versions", connector.inboundModelVersions.join(", ")) : ""
+                    }
+                    {
+                        displayField("Outbound IDS Model Version", connector.outboundModelVersion)
+                    }
+                </Grid>
+            }>
+            <Grid container className="main-container">
+                {
+                    connector.description ?
+                        <BrokerAttribute className="attr-description" col={12}
                             label="Description"
                             value={connector.description.join(", ")} /> : ""
-                    }
-                    
-                    {
-                        displayURI("Connector URI", connector.originURI, 12)
-                    }
+                }
 
-                    {
-                        resources.length !== 0 ?
-                            <BrokerAttribute
+                {
+                    displayURI("Access URL", connector.accessUrl, 12)
+                }
+
+                {
+                    resources.length !== 0 ?
+                        <BrokerAttribute
                             col={12}
                             label="Resources ID">
-                                {resources.map(resource => (
-                                    <Link to={'/resources/resource?id=' + resource.resourceID } target="_blank"
-                                    key={resource.resourceID} 
+                            {resources.map(resource => (
+                                <Link to={'/resources/resource?id=' + resource.resourceID} target="_blank"
+                                    key={resource.resourceID}
                                     className="resource-link">
-                                        {resource.title ? resource.title.join(", ") : "Unknown Resource" }
-                                    </Link>
-                                ))}
-                            </BrokerAttribute> : ""
-                    }
-                </Grid>
+                                    {resource.title ? resource.title.join(", ") : "Unknown Resource"}
+                                </Link>
+                            ))}
+                        </BrokerAttribute> : ""
+                }
+            </Grid>
 
-                <Grid container className="rounded-borders">
-                    {
-                        displayURI("Curator", provider.curator, 6)
-                    }
-                    {
-                        displayURI("Maintainer", provider.maintainer, 6)
-                    }
-                </Grid>
+            <Grid container className="rounded-borders">
+                {
+                    displayURI("Curator", provider.curatorAsUri, 6)
+                }
+                {
+                    displayURI("Maintainer", provider.maintainerAsUri, 6)
+                }
+            </Grid>
         </BrokerViewComponent>
     );
 }

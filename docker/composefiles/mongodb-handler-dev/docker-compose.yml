@@ -8,7 +8,7 @@ volumes:
 services:
 
   broker-core:
-    image: registry.gitlab.cc-asp.fraunhofer.de:4567/eis-ids/broker/core
+    image: registry.gitlab.cc-asp.fraunhofer.de/eis-ids/broker/core
     volumes:
       - /etc/idscert/localhost:/etc/cert/
       #- c:/etc/idscert/localhost:/etc/cert/
@@ -24,7 +24,7 @@ services:
       - "broker-fuseki"
 
   broker-fuseki:
-    image: registry.gitlab.cc-asp.fraunhofer.de:4567/eis-ids/broker/fuseki
+    image: registry.gitlab.cc-asp.fraunhofer.de/eis-ids/broker/fuseki
     environment:
     - ADMIN_PASSWORD=test
     ports:

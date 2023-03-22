@@ -1,34 +1,33 @@
 {
   "dependencies": {
-    "@appbaseio/reactivesearch": "3.28.0",
+    "@appbaseio/reactivesearch": "^3.43.7",
     "@mapbox/leaflet-pip": "^1.1.0",
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.54",
-    "axios": "^0.21.1",
+    "axios": "^1.2.6",
+    "@react-leaflet/core": "^1.0.2",
     "form-data": "latest",
-    "icomoon-react": "^2.0.19",
+    "icomoon-react": "^3.0.0",
     "leaflet": "^1.7.1",
-    "material-table": "^1.69.2",
-    "mui-datatables": "^2.14.0",
-    "node-sass": "^4.14.1",
     "npm": "^7.20.3",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-expand-collapse": "latest",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "react-leaflet": "^3.1.0",
     "react-redux": "^7.2.0",
-    "react-router-dom": "^5.1.2",
-    "recharts": "^2.0.0-beta.5",
+    "react-router-dom": "5.1.2",
+    "recharts": "^2.3.2",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "jspdf": "2.3.1",
+    "async": "2.6.4"
   },
   "name": "ids_broker_searchfrontend",
   "description": "Search GUI for browsing the metadata registry of an IDS Broker",
   "version": "0.0.1",
   "devDependencies": {
     "react-scripts": "^4.0.3",
-    "sass": "^1.35.1"
+    "sass": "^1.57.1"
   },
   "homepage": ".",
   "scripts": {
@@ -44,3 +43,4 @@
   ],
   "proxy": "http://localhost:4000"
 }
+

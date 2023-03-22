@@ -23,11 +23,9 @@ import ToolbarList from './components/ToolbarList';
 
 import "./css/App.scss"
 import "./css/MDS.css"
-import FhgResourceView from "./components/ConnectorFhg";
 import Maintainer from "./components/Maintainer";
 import UsageControl from "./components/UsageControl";
 import ParticipantList from "./components/ParticipantList";
-import Tooltip from '@material-ui/core/Tooltip';
 import SearchMDMResources from './components/SearchMDMResources';
 import SearchMDMResourcesAdmin from './components/SearchMDMResourcesAdmin';
 import { BrokerResourceView } from './components/BrokerResourceView';
@@ -45,8 +43,8 @@ import { BrokerConnectorViewComponent } from './components/BrokerConnectorViewCo
 import { BrokerConnectorViewComponentAdmin } from './components/BrokerConnectorViewComponentAdmin';
 
 import { elasticsearchURL } from './urlConfig';
-import { FlashOnOutlined, FormatLineSpacingRounded } from '@material-ui/icons';
 import Footer from './components/Footer';
+import ImprintViewMDS from './ImprintViewMDS';
 
 const drawerWidth = 300;
 const styles = theme => ({
@@ -179,26 +177,20 @@ class App extends React.Component {
     }
 
     // change eis to paris to have the paris frontend
-    tenant = process.env.REACT_APP_TENANT || 'mobids';
+    tenant = process.env.REACT_APP_TENANT || 'eis';
     tenant = this.tenant.toLowerCase();
 
+    /*
+    Do not initialize broker URL in componentDidMount because it is only called onComponentMount.
+    Get Broker URL dynamically to make it available for all routing paths.
+    */
     getBrokerURL = () => {        
         // development only
-        //return new URL('http://localhost:9200').toString();
+       // return new URL(window._env_.REACT_APP_BROKER_URL).toString();
 
         // uncomment for deployment
-        if(window._env_ === undefined)
-            return new URL('/es', window.location.origin).toString()
-       else
-           return new URL('/es', window._env_.REACT_APP_BROKER_URL).toString();
+        return elasticsearchURL;
     }
-    /*
-    setBrokerURL is only called onCompomentMount 
-    and therefore not available for some Routing paths.
-    Better: Use this method to get the broker url dynamically. Do not use this.brokerURL.
-     getBrokerURL = () => {*/
-   
-
 
     handleDrawerOpen = () => {
         this.setState({
@@ -274,7 +266,6 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-   
         this.setState({
             resource: window.localStorage.getItem("resource")
         })
@@ -303,9 +294,7 @@ class App extends React.Component {
                         <h5 style={{ fontSize: '14px', paddingTop: '6px' }}>{this.renderMainTitle(this.tenant)}</h5>
                         <p style={{ fontSize: '10px', textAlign: 'left' }}>International Data Spaces</p>
                     </Grid>
-                    <Grid className="footer-mail" container item xs={6} lg={6} md={6} >
-                        <a href="mailto:contact@ids.fraunhofer.de" style={{ fontSize: '10px' }}>contact@ids.fraunhofer.de</a>
-                    </Grid>
+                   
                     <Grid className="footer-mail" container item xs={6} lg={6} md={6} >
                         <a href="https://www.iais.fraunhofer.de/.org/" style={{ fontSize: '10px' }}>© {new Date().getFullYear()}&nbsp;Fraunhofer IAIS</a>
                     </Grid>
@@ -374,10 +363,12 @@ class App extends React.Component {
                     })}>
                         <div className={clsx(classes.appBarSpacer, 'appBarSpacer')} />
                         <Container maxWidth="xl" className={classes.container}>
-                            <Route exact path="/">
+                            
+                            
+                        { this.tenant == 'mobids' ? <Route exact path="/">
                                 <MDSHome />
-                            </Route>
-                            { this.tenant !== 'mobids' ? <Route path="/browse">
+                            </Route> : ""}
+                            { this.tenant == 'eis' ? <Route path="/browse">
                                 <Dashboard />
                             </Route> : ""}
                             <Route path="/connector/:resID">
@@ -385,7 +376,7 @@ class App extends React.Component {
                                     <Grid item md={3} xs={12}>
                                     </Grid>
                                     <Grid item lg={6} md={9} xs={12}>
-                                        <BrokerConnectorViewComponent {...this.props} es_url={this.getBrokerURL()} showBackButton={true} />
+                                        <BrokerConnectorViewComponent {...this.props} es_url={this.getBrokerURL()} showBackButton={false} />
                                     </Grid>
                                 </Grid>
                             </Route>
@@ -427,7 +418,16 @@ class App extends React.Component {
                                     <Grid item md={3} xs={12}>
                                     </Grid>
                                     <Grid item lg={6} md={9} xs={12}>
-                                        <BrokerResourceView {...this.props} es_url={this.getBrokerURL()} showBackButton={true} />
+                                        <BrokerResourceView {...this.props} es_url={this.getBrokerURL()} showBackButton={false} />
+                                    </Grid>
+                                </Grid>
+                            </Route>
+                            <Route path="/resourcesadmin/:resID">
+                                <Grid container>
+                                    <Grid item md={3} xs={12}>
+                                    </Grid>
+                                    <Grid item lg={6} md={9} xs={12}>
+                                        <BrokerResourceViewAdmin {...this.props} es_url={this.getBrokerURL()} showBackButton={true} />
                                     </Grid>
                                 </Grid>
                             </Route>
@@ -464,7 +464,7 @@ class App extends React.Component {
                                 <ReactiveBase
                                     app={this.getElasticSearchIndex(this.tenant)}
                                     credentials="null"
-                                    url={this.getBrokerURL}
+                                    url={this.getBrokerURL()}
                                     analytics
                                 >
                                     {
@@ -475,9 +475,12 @@ class App extends React.Component {
                             <Route path="/data-protection">
                                 <DataPrivacyView />
                             </Route>
-                            <Route path="/imprint">
+                            { this.tenant !== 'mobids' ? <Route path="/imprint">
                                 <ImprintView />
-                            </Route>
+                            </Route> : ""}
+                            { this.tenant == 'mobids' ? <Route path="/imprint">
+                                <ImprintViewMDS />
+                            </Route> : ""}
                             <Route path="/maintainer">
                                 <Maintainer />
                             </Route>

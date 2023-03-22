@@ -12,7 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
 import { Button } from '@material-ui/core';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 
 import Logo from '../assets/MDS-Logo-black.svg'
@@ -110,6 +110,7 @@ class ToolbarList extends Component {
         const showDashboard = false;
         const selectedPath = this.props.location.pathname;
         const mobilityForumUrl = "http://forum.mobility-dataspace.eu/"
+        const mobilityContactUrl = "https://mobility-dataspace.eu/#c317"
 
         return (
             <AppBar position={this.state.open ? "absolute" : "static"} className={clsx(classes.appBar, this.state.open ? classes.appBarOpen: classes.appBarMDS, 'appbar')}>
@@ -152,7 +153,7 @@ class ToolbarList extends Component {
                                 linkTo="/connector"
                                 selected={selectedPath.startsWith('/connector')}
                                 onClick={this.handleDrawerClose}
-                                label="Connector" />
+                                label="Connectors" />
 
 
                             {
@@ -187,7 +188,7 @@ class ToolbarList extends Component {
                         </List>
 
                         <div className='mobile-only menu-item'><a href={mobilityForumUrl} target="_blank">MDS Forum</a></div>
-                        <div className='mobile-only menu-item'><a>Contact</a></div>
+                        <div className='mobile-only menu-item'><a href={mobilityContactUrl}>Contact</a></div>
                     </nav>
 
                     <div className={classes.appBarIconDiv}>

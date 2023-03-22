@@ -51,7 +51,22 @@
     margin-bottom: 3px;
 }
 
-button.expandButton {
+.theme-eis button.expandButton {
+    border-radius: 0;
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    display: block;
+    color: black;
+    background-color: #4082db;
+    text-align: left;
+    text-transform: none;
+    box-shadow: none;
+    margin-bottom: 14px;
+}
+
+.theme-mobids button.expandButton {
+
     border-radius: 0;
     width: 100%;
     padding: 15px;

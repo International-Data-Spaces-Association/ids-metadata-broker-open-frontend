@@ -26,22 +26,7 @@ export function BrokerResourceView(props) {
 
     let [open, setOpen] = React.useState(false);
 
-    let targetURI = props.es_url
-    let selfURI = props.es_url
-    
-    //uncomment when merging with master branch M.P.
-    if (typeof (targetURI) !== 'undefined' && targetURI != null) {
-        if (!targetURI.includes("/es")) {
-
-            targetURI = targetURI + "/es"
-        }
-        else {
-            selfURI = selfURI.substr(0, selfURI.length - 3)
-        }
-    }
-    else {
-        targetURI = "/es"
-    }
+    let elasticsearchURL = props.es_url
 
     const ADMIN_GRAPH = "<https://broker.ids.isst.fraunhofer.de/admin>";
     const user = useSelector(state => state.auth.user);
@@ -371,7 +356,7 @@ export function BrokerResourceView(props) {
 
     //function to display field/URI based on 'div' classname
     function displayField(fieldLabel, fieldVal, col, className) {
-        if(!fieldVal)
+        if (!fieldVal)
             return ""
 
         return (
@@ -380,7 +365,7 @@ export function BrokerResourceView(props) {
     }
 
     function displayURI(fieldLabel, fieldVal, col) {
-        if(!fieldVal)
+        if (!fieldVal)
             return ""
 
         return (
@@ -416,7 +401,7 @@ export function BrokerResourceView(props) {
     */
 
     function firstArrayItem(arr, prop) {
-        if(!arr || arr.length < 1)
+        if (!arr || arr.length < 1)
             return undefined
         else if (!prop)
             return arr[0]
@@ -433,13 +418,13 @@ export function BrokerResourceView(props) {
 
     return (
         <div>
-            <BrokerViewComponent 
-            showBackButton={props.showBackButton}
-            title={resource_title ? resource_title : "Unknown Resource"}
-            showMore={
-                <React.Fragment>
+            <BrokerViewComponent
+                showBackButton={props.showBackButton}
+                title={resource_title ? resource_title : "Unknown Resource"}
+                showMore={
+                    <React.Fragment>
                         <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Meta Data</Typography>
-                        <Grid container>      
+                        <Grid container>
                             {
                                 resource.language ? displayField("Language", resource.language.join(", "), 4) : ""
                             }
@@ -447,32 +432,31 @@ export function BrokerResourceView(props) {
                                 displayField("Version", resource.version, 4)
                             }
                             {
-                               displayField("Content Type", resource.contentType, 4)
+                                displayField("Content Type", resource.contentType, 4)
                             }
                             {
                                 displayURI("Content Standard", resource.contentStandard, 4)
                             }
                         </Grid>
-                        
+
                         <div className="rounded-borders">
                             <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Description</Typography>
                             <Grid container>
                                 {
-                                    resource["mobids:transportMode"] ? displayField("Transport Mode", resource["mobids:transportMode"].join(", "), 4) : ""
+                                    resource["mds:transportMode"] ? displayField("Transport Mode", resource["mds:transportMode"].join(", "), 4) : ""
                                 }
                                 {
-                                    // TODO: add data model
-                                    displayField("Data Model", "TODO", 4)
+                                    displayField("Data Model", resource["mds:dataModel"], 4)
                                 }
                                 {
-                                    resource["mobids:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mobids:geoReferenceMethod"].join(", "), 4) : ""
+                                    resource["mds:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mds:geoReferenceMethod"].join(", "), 4) : ""
                                 }
                                 {
-                                    displayURI("Standard", representationStandard , 4)
+                                    displayURI("Standard", representationStandard, 4)
                                 }
                             </Grid>
                         </div>
-                        
+
                         {
                             resource.representation ?
                                 <div className="rounded-borders">
@@ -482,18 +466,18 @@ export function BrokerResourceView(props) {
                                             {
                                                 rep.instance ?
                                                     rep.instance.map(instance => (
-                                                            <React.Fragment>
-                                                                {
-                                                                    displayURI("File Name", instance.filename, 12)
-                                                                }
-                                                                {
-                                                                    instance.creation ? displayField("Created", instance.creation.split("T")[0], 4) : ""
-                                                                }
-                                                                {
-                                                                    instance.bytesize ? displayField("File Size", getByteSize(instance.bytesize), 4) : ""
-                                                                }
-                                                            </React.Fragment>
-                                                        )) : ""
+                                                        <React.Fragment>
+                                                            {
+                                                                displayURI("File Name", instance.filename, 12)
+                                                            }
+                                                            {
+                                                                instance.creation ? displayField("Created", instance.creation.split("T")[0], 4) : ""
+                                                            }
+                                                            {
+                                                                instance.bytesize ? displayField("File Size", getByteSize(instance.bytesize), 4) : ""
+                                                            }
+                                                        </React.Fragment>
+                                                    )) : ""
                                             }
                                             {
                                                 displayField("MimeType", rep.labelMediatype, 4)
@@ -575,8 +559,8 @@ export function BrokerResourceView(props) {
                                 </div> : ""
                         }
                     </React.Fragment>
-            }
-            parentLink="/resources">
+                }
+                parentLink="/resources">
                 <div>
                     <Grid container className="main-container">
                         {
@@ -592,18 +576,16 @@ export function BrokerResourceView(props) {
 
                     <Grid container className="rounded-borders">
                         {
-                            displayURI("Data Owner", resource.sovereign, 6)
+                            displayURI("Data Owner", resource.sovereignAsUri, 6)
                         }
                         {
-                            displayURI("Data Publisher", resource.publisher, 6)
+                            displayURI("Data Publisher", resource.publisherAsUri, 6)
                         }
                         {
-                            // TODO: category
-                            resource["mobids:DataCategory"] ? displayField("Data Category", resource["mobids:DataCategory"].join(", "), 6) : ""
+                            resource["mds:dataCategory"] ? displayField("Data Category", resource["mds:dataCategory"].join(", "), 6) : ""
                         }
                         {
-                            // TODO: add sub-category
-                            displayField("Data Sub-Category", "TODO", 6)
+                            resource["mds:dataSubcategory"] ? displayField("Data Sub-Category", resource["mds:dataSubcategory"].join(", "), 6) : ""
                         }
                         {
                             resource.keyword ? displayField("Keywords", resource.keyword.join(", "), 6) : ""

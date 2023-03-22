@@ -9,7 +9,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DescriptionRoundedIcon from '@material-ui/icons/DescriptionRounded';
 import { Container } from '@material-ui/core';
-
+import { elasticsearchURL } from '../urlConfig';
 import { getCntResourcesByPublisher } from '../helpers/sparql/connectors';
 
 
@@ -44,7 +44,8 @@ class ResourcePublishersView extends Component {
                 })
         } else {
             axios
-            .post('/es/registrations/_msearch?',
+            .post(elasticsearchURL + '/registrations/_msearch?',
+
                     '{"preference":"list-3"}\n{"query":{"match_all":{}},"size":0,"aggs":{"catalog.resources.publisher.keyword":{"terms":{"field":"catalog.resources.publisher.keyword","size":100,"order":{"_count":"desc"}}}}}\n'
                     , {
                         headers: {

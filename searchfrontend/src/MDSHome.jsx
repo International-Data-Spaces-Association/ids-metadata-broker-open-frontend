@@ -7,13 +7,15 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { Typography } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 class CategoryItem extends React.Component {
 
     render() {
         let cat = this.props.category
+        let link = `/resources?adv_category=["${encodeURIComponent(cat.key)}"]`
 
-        return <Card className="category">
+        return <Link to={link}><Card className="category">
             <CardMedia
                 component="img"
                 height="180"
@@ -28,7 +30,7 @@ class CategoryItem extends React.Component {
                     {cat.description}
                 </Typography>*/}
             </CardContent>
-        </Card>
+        </Card></Link>
     }
 }
 
@@ -39,8 +41,8 @@ class MDSHome extends React.Component {
         const showButtons = false, showTrusted = false;
 
         return <Container maxWidth="md">
-            <h1 component="h1" id="home-title">Welcome to Mobility<br />Data Space Catalog</h1>
-            <p id="home-subtitle">Get acces to different data Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.</p>
+            <h1 component="h1" id="home-title">Welcome to Mobility Data Space Catalog</h1>
+            <p id="home-subtitle">Your starting point for data exchange: Simply click on the preferred category, select the desired data and get in touch with the data provider.</p>
             {showButtons ? <Box className="button-container">
                 <span className="button-light">Choose your data category <img src="./arrow-right.svg" alt="Search" height='15px' /></span>
                 <span className="button-default">Get in touch</span>
