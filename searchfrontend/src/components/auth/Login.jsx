@@ -117,7 +117,7 @@ class Login extends React.Component {
         <Button
           className={classes.button}
           onClick={this.toggle}>
-          Login
+          Admin Login
         </Button>
         <Modal
           aria-labelledby="simple-modal-title"

@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { Container, Divider } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
-import Rating from '@material-ui/lab/Rating';
-import Box from '@material-ui/core/Box';
 import axios from 'axios';
-
+import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 
 import { mongodb_handlerURL } from '../urlConfig';
 
 import { getResource } from '../helpers/sparql/connectors';
+
+import '../css/ConnectorView.css'
+import { BrokerAttribute, BrokerAttributeUrl, BrokerViewComponent } from "./BrokerViewComponent";
 
 export function BrokerResourceView(props) {
 
@@ -24,9 +23,10 @@ export function BrokerResourceView(props) {
     let [resource, setResource] = useState({});
 
     let [open, setOpen] = React.useState(false);
+
     let targetURI = props.es_url
     let selfURI = props.es_url
-
+    
     //uncomment when merging with master branch M.P.
     if (typeof (targetURI) !== 'undefined' && targetURI != null) {
         if (!targetURI.includes("/es")) {
@@ -367,35 +367,22 @@ export function BrokerResourceView(props) {
         }
     }
 
-
-    let resource_title = resource.mainTitle || resource.title_en || resource.title || resource.title_de;
-    let resource_description = resource.description_en || resource.description_de || resource.description;
-
     //function to display field/URI based on 'div' classname
-    function displayField(fieldLabel, fieldVal, classVal) {
+    function displayField(fieldLabel, fieldVal, col, className) {
+        if(!fieldVal)
+            return ""
+
         return (
-            <div className={classVal}>
-                <Typography variant="body2" gutterBottom>{fieldLabel}</Typography>
-                <Typography variant="h6" gutterBottom>{fieldVal}</Typography>
-            </div>
+            <BrokerAttribute label={fieldLabel} value={fieldVal} col={col} className={className} />
         );
     }
 
-    function displayURI(fieldLabel, fieldVal, classVal) {
-        return (
-            <div className={classVal}>
-                <Typography variant="body2" gutterBottom>{fieldLabel}</Typography>
-                <Typography variant="h6" gutterBottom><a rel="noopener noreferrer" href={`${fieldVal}`} target="_blank">{fieldVal}</a></Typography>
-            </div>
-        );
-    }
+    function displayURI(fieldLabel, fieldVal, col) {
+        if(!fieldVal)
+            return ""
 
-    function displayRefURI(fieldLabel, fieldVal, classVal) {
         return (
-            <div className={classVal}>
-                <Typography variant="body2" gutterBottom>{fieldLabel}</Typography>
-                <Typography variant="h6" gutterBottom><a rel="noopener noreferrer" href={`${selfURI}/connector/connector?id=${fieldVal}`} target="_self">{fieldVal}</a></Typography>
-            </div>
+            <BrokerAttributeUrl label={fieldLabel} value={fieldVal} col={col} />
         );
     }
 
@@ -417,355 +404,310 @@ export function BrokerResourceView(props) {
         )
     }
 
+    /*
+    The following properties may exist or may not.
+    But, for an unknown reason, if they exist, they are an array containing only one item (object).
+
+    - resource.contract
+    - resource.contract[0].contractPermission
+    - resource.representation
+    */
+
+    function firstArrayItem(arr, prop) {
+        if(!arr || arr.length < 1)
+            return undefined
+        else if (!prop)
+            return arr[0]
+        else if (!arr[0].hasOwnProperty(prop))
+            return undefined
+
+        return arr[0][prop]
+    }
+
+    let firstContract = firstArrayItem(resource.contract)
+    let representationStandard = firstArrayItem(resource.representation, 'representationStandard')
+    let resource_title = resource.mainTitle || resource.title_en || resource.title || resource.title_de;
+    let resource_description = resource.description_en || resource.description_de || resource.description;
+
     return (
         <div>
-            {
-                props.showBackButton ?
-                    <IconButton aria-label="go back" size="medium" onClick={() => { props.history.goBack(); }}>
-                        <ArrowBackIcon fontSize="inherit" />
-                    </IconButton> : ""
-            }
-            <Container className="connector-view">
-                {
-                    resource_title ?
-                        <Typography variant="h4" display="block" gutterBottom>
-                            {resource_title}
-                        </Typography> :
-                        <Typography variant="h4" display="block" gutterBottom>
-                            "Unknown Resource"
-                        </Typography>
-                }
-                <div>
-                    {
-                        resource.originURI ? displayURI("Original ID", resource.originURI, "flow-attributes") : ""
-                    }
-                    {
-                        resource.description ? displayField("Resource Description", resource.description.join(", "), "flow-attributes") : ""
-                    }
-                    {
-                        resource.connectorID ? displayRefURI("Internal Connector ID", resource.connectorID, "flow-attributes") : ""
-                    }
-                    {
-                        resource.sovereign ? displayURI("Data Owner", resource.sovereign, "flow-attributes") : ""
-                    }
-                    {
-                        resource.publisher ? displayURI("Data Publisher", resource.publisher, "flow-attributes") : ""
-                    }
-                    {
-                        resource.labelStandardLicense ? displayURI("Standard License", resource.labelStandardLicense, "flow-attributes") : ""
-                    }
-                    <div className="rounded-borders">
-                        <Typography variant="body2" gutterBottom align="left">Trust level</Typography>
-                        {trustLevel}
-                    </div>
-                    {user !== null && (
+            <BrokerViewComponent 
+            showBackButton={props.showBackButton}
+            title={resource_title ? resource_title : "Unknown Resource"}
+            showMore={
+                <React.Fragment>
+                        <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Meta Data</Typography>
+                        <Grid container>    
+                            {
+                                resource.language ? displayField("Language", resource.language.join(", "), 4) : ""
+                            }
+                            {
+                                displayField("Version", resource.version, 4)
+                            }
+                            {
+                               displayField("Content Type", resource.contentType, 4)
+                            }
+                            {
+                                displayURI("Content Standard", resource.contentStandard, 4)
+                            }
+                            /*these 4 Fields are only visible if you run the DQV Broker*/
+                            {
+                                displayField("Accuracy", resource.spatialAccuracy, 4)
+                            }
+							{
+                            displayField("Completeness", resource.populationCompleteness, 4)
+                            }
+							{
+                            displayField("Precision", resource.spatialResolutionAsAngularDistance, 4)
+                            }
+							{
+                            displayField("Consistency", resource.rateOfObjectsWithInconsistencyBetweenGivenProperties, 4)
+                            }
+                        </Grid>
+                        
                         <div className="rounded-borders">
-                            <Typography variant="body2" gutterBottom align="left">Average rating</Typography>
-                            <Rating
-                                name="simple-controlled"
-                                value={averageRatingValue}
-                                precision={0.05}
-                                readOnly
-                            />
-                            <Typography variant="body2" gutterBottom align="left">(based on {noOfRatings} ratings)</Typography>
-
-                            <Typography variant="body2" gutterBottom align="left">My rating</Typography>
-                            <Rating
-                                name="simple-controlled"
-                                value={myRatingValue}
-                                onChange={(event, newValue) => {
-                                    setNewRatingValue(newValue);
-                                }}
-                                onChangeActive={(event, newHover) => {
-                                    setHover(newHover);
-                                }}
-                            />
-                            {averageRatingValue !== null && <Box ml={2}>{labels[hover !== -1 ? hover : '']}</Box>}
+                            <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Resource Description</Typography>
+                            <Grid container>
+                                {
+                                    resource["mds:transportMode"] ? displayField("Transport Mode", resource["mds:transportMode"].join(", "), 4) : ""
+                                }
+                                {
+                                    displayField("Data Model", resource["mds:dataModel"], 4)
+                                }
+                                {
+                                    resource["mds:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mds:geoReferenceMethod"].join(", "), 4) : ""
+                                }
+                                {
+                                    displayURI("Standard", representationStandard , 4)
+                                }
+                            </Grid>
                         </div>
-                    )}
-                    <div className="rounded-borders">
-                        <Typography variant="body2" gutterBottom align="left">Resource Meta Data</Typography>
-
+                        
                         {
-                            resource.keyword ? displayField("Keyword", resource.keyword.join(", "), "inline-attributes") : ""
+                            resource.representation ?
+                                <div className="rounded-borders">
+                                    <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Representation</Typography>
+                                    {resource.representation.map(rep => (
+                                        <Grid container>
+                                            {
+                                                rep.instance ?
+                                                    rep.instance.map(instance => (
+                                                            <React.Fragment>
+                                                                {
+                                                                    displayURI("File Name", instance.filename, 12)
+                                                                }
+                                                                {
+                                                                    instance.creation ? displayField("Created", instance.creation.split("T")[0], 4) : ""
+                                                                }
+                                                                {
+                                                                    instance.bytesize ? displayField("File Size", getByteSize(instance.bytesize), 4) : ""
+                                                                }
+                                                            </React.Fragment>
+                                                        )) : ""
+                                            }
+                                            {
+                                                displayField("MimeType", rep.labelMediatype, 4)
+                                            }
+                                            {
+                                                displayURI("Domain Vocabulary", rep.representationVocab, 4)
+                                            }
+                                            {
+                                                displayURI("Standard License", resource.labelStandardLicense, 4)
+                                            }
+                                            {
+                                                displayURI("Sample Resource", resource.sample, 4)
+                                            }
+                                        </Grid>
+                                    ))}
+                                </div> : ""
                         }
 
-                        {
-                            resource["mobids:DataCategory"] ? displayField("Data Category", resource["mobids:DataCategory"].join(", "), "inline-attributes") : ""
-                        }
-                        {
-                            resource["mobids:DataCategoryDetail"] ? displayField("Data Category Detail", resource["mobids:DataCategoryDetail"].join(", "), "inline-attributes") : ""
-                        }
-                        {
-                            resource["mobids:transportMode"] ? displayField("Transport Mode", resource["mobids:transportMode"].join(", "), "inline-attributes") : ""
-                        }
-                        {
-                            resource["mobids:roadNetworkCoverage"] ? displayField("Road Network Coverage", resource["mobids:roadNetworkCoverage"].join(", "), "inline-attributes") : ""
-                        }
-                        {
-                            resource["mobids:geoReferenceMethod"] ? displayField("Geo Reference Method", resource["mobids:geoReferenceMethod"].join(", "), "inline-attributes") : ""
-                        }
-                        {
-                            resource["mobids:nutsLocation"] ? displayField("NUTS Code", resource["mobids:nutsLocation"].join(", "), "inline-attributes") : ""
-                        }
+                        {/*user !== null && (
+                            <div className="rounded-borders">
+                                <Typography variant="body2" gutterBottom align="left">Average rating</Typography>
+                                <Rating
+                                    name="simple-controlled"
+                                    value={averageRatingValue}
+                                    precision={0.05}
+                                    readOnly
+                                />
+                                <Typography variant="body2" gutterBottom align="left">(based on {noOfRatings} ratings)</Typography>
+
+                                <Typography variant="body2" gutterBottom align="left">My rating</Typography>
+                                <Rating
+                                    name="simple-controlled"
+                                    value={myRatingValue}
+                                    onChange={(event, newValue) => {
+                                        setNewRatingValue(newValue);
+                                    }}
+                                    onChangeActive={(event, newHover) => {
+                                        setHover(newHover);
+                                    }}
+                                />
+                                {averageRatingValue !== null && <Box ml={2}>{labels[hover !== -1 ? hover : '']}</Box>}
+                            </div>
+                                )*/}
 
                         {
-                            resource.version ? displayField("Version", resource.version, "inline-attributes") : ""
+                            resource.contract ?
+                                <div className="rounded-borders">
+                                    {resource.contract.map(contract => (
+                                        <React.Fragment>
+                                            <Typography variant="body2" gutterBottom align="left">Offer information</Typography>
+                                            <Grid container>
+                                                {
+                                                    displayURI("Provider", contract.contractProvider, 12)
+                                                }
+                                                {/*
+                                                    contract.contractConsumer ? displayURI("Consumer", contract.contractConsumer, 4) : ""
+                                                */}
+                                                {/*
+                                                    contract.contractRefersTo ? displayField("Refers to", contract.contractRefersTo, 4) : ""
+                                                */}
+                                                {
+                                                    contract.contractDate ? displayField("Date of signing", contract.contractDate.split("T")[0], 4) : ""
+                                                }
+                                                {
+                                                    contract.contractStart ? displayField("Start date", contract.contractStart.split("T")[0], 4) : ""
+                                                }
+                                                {
+                                                    contract.contractEnd ? displayField("End date", contract.contractEnd.split("T")[0], 4) : ""
+                                                }
+                                                {/*
+                                                    contract.contractDocument && contract.contractDocument.docTitle ? displayField("Contract Title", contract.contractDocument.docTitle.join(", "), 4) : ""
+                                                }
+                                                {
+                                                    contract.contractDocument && contract.contractDocument.docDesc ? displayField("Contract Description", contract.contractDocument.docDesc.join(", "), 4) : ""
+                                                */}
+                                            </Grid>
+                                        </React.Fragment>
+                                    ))}
+                                </div> : ""
                         }
+                    </React.Fragment>
+            }
+            parentLink="/resources">
+                <div>
+                    <Grid container className="main-container">
+                        {
+                            resource.description ? displayField("Description", resource.description.join(", "), 12, "attr-description") : ""
+                        }
+                        {
+                            displayURI("Original ID", resource.originURI, 12)
+                        }
+                        {
+                            //displayRefURI("Internal Connector ID", resource.connectorID, 12)
+                        }
+                    </Grid>
 
+                    <Grid container className="rounded-borders">
                         {
-                            resource.language ? displayField("Language", resource.language.join(", "), "inline-attributes") : ""
+                            displayURI("Data Owner", resource.sovereignAsUri, 6)
                         }
                         {
-                            resource.contentType ? displayField("Content Type", resource.contentType, "inline-attributes") : ""
+                            displayURI("Data Publisher", resource.publisherAsUri, 6)
                         }
                         {
-                            resource.contentStandard ? displayURI("Content Standard", resource.contentStandard, "inline-attributes") : ""
+                            resource["mds:dataCategory"] ? displayField("Data Category", resource["mds:dataCategory"].join(", "), 6) : ""
                         }
                         {
-                            resource.paymentModality ? displayURI("Payment Modality", resource.paymentModality, "inline-attributes") : ""
+                            resource["mds:dataSubcategory"] ? displayField("Data Sub-Category", resource["mds:dataSubcategory"].join(", "), 6) : ""
                         }
                         {
-                            resource.sample ? displayURI("Sample Resource", resource.sample, "inline-attributes") : ""
+                            resource.keyword ? displayField("Keywords", resource.keyword.join(", "), 6) : ""
                         }
                         {
-                            resource.temporalCoverages && resource.temporalCoverages.length !== 0 ?
-                                <React.Fragment>
-                                    {resource.temporalCoverages.map(resTempInterval => (
-                                        resTempInterval.temporalCoverageInterval ? displayField("Temporal Coverage of the Content", `Begin: ${resTempInterval.temporalCoverageInterval.begin.split("T")[0]} End: ${resTempInterval.temporalCoverageInterval.end.split("T")[0]}`, "inline-attributes") : ""
-                                    ))
-                                    }
-                                </React.Fragment> : ""
+                            displayURI("Payment Modality", resource.paymentModality, 6)
+                        }
+                        {
+                            firstContract && firstContract.contractEnd ? displayField("Expiry date", firstContract.contractEnd.split("T")[0], 6) : ""
+                        }
+                    </Grid>
+                    {firstContract ? <div className="rounded-borders">
+                        <Typography className="secondary-subtitle" variant="body2" gutterBottom align="left">Usage Policy</Typography>
+                        <Grid container>
+                            {
+                                firstContract.contractObligation ?
+                                    firstContract.contractObligation.map(oblige => (
+                                        <React.Fragment>
+                                            {
+                                                oblige.dutyConstraint ?
+                                                    oblige.dutyConstraint.map(constraint => (
+                                                        <React.Fragment>
+                                                            {
+                                                                constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Duty Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, 6) : ""
+                                                            }
+                                                        </React.Fragment>
+                                                    ))
+                                                    : ""
+                                            }
+                                            {
+                                                oblige.dutyAction ? displayField("Duty Action", oblige.dutyAction.join(", "), 6) : ""
+                                            }
+                                        </React.Fragment>
+                                    )) : ""
+                            }
+                            {
+                                firstContract.contractPermission ?
+                                    firstContract.contractPermission.map(permission => (
+                                        <React.Fragment>
+                                            {
+                                                permission.permissionConstraint ?
+                                                    permission.permissionConstraint.map(constraint => (
+                                                        <React.Fragment>
+                                                            {
+                                                                constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Permission Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, 6) : ""
+                                                            }
+                                                        </React.Fragment>
+                                                    ))
+                                                    : ""
+                                            }
+                                            {
+                                                permission.permissionAction ? displayField("Permission Action", permission.permissionAction.join(", "), 6) : ""
+                                            }
+                                        </React.Fragment>
+                                    )) : ""
+                            }
+                            {
+                                firstContract.contractProhibition ?
+                                    firstContract.contractProhibition.map(prohibit => (
+                                        <React.Fragment>
+                                            {
+                                                prohibit.prohibitionConstraint ?
+                                                    prohibit.prohibitionConstraint.map(constraint => (
+                                                        <React.Fragment>
+                                                            {
+                                                                constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Prohibition Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, 6) : ""
+                                                            }
+                                                        </React.Fragment>
+                                                    ))
+                                                    : ""
+                                            }
+                                            {
+                                                prohibit.prohibitionAction ? displayField("Prohibition Action", prohibit.prohibitionAction.join(", "), 6) : ""
+                                            }
+                                        </React.Fragment>
+                                    )) : ""
+                            }
+                        </Grid>
+                    </div> : ""}
+                </div>
+            </BrokerViewComponent>
+
+            <Button className={clsx("expandButton", open && "expanded")} variant="contained"
+                onClick={() => { setOpen(!open); }}>
+                {open ? "Hide JSON-LD" : "Show JSON-LD"}
+            </Button>
+            {
+                open ?
+                    <div style={{ margin: "20px" }}>
+                        {
+                            resource.resourceAsJsonLd ? displayResourceRdf(resource.resourceAsJsonLd) : ""
                         }
                     </div>
-
-                    <br />
-                    {
-                        resource.endpoints ?
-                            <div className="rounded-borders">
-                                <Typography variant="body2" gutterBottom align="left">Resource Endpoints</Typography>
-                                {resource.endpoints.map(endpoint => (
-                                    <React.Fragment>
-                                        {/* {
-                                                                endpoint.Path ? displayField("Path", endpoint.Path, "inline-attributes") : ""
-                                                            } */}
-                                        {
-                                            endpoint.inboundPath ? displayField("Inbound Path", endpoint.inboundPath, "inline-attributes") : ""
-                                        }
-                                        {
-                                            endpoint.outboundPath ? displayField("Outbound Path", endpoint.outboundPath, "inline-attributes") : ""
-                                        }
-                                        {
-                                            endpoint.endpointArtifacts ?
-                                                <span>
-                                                    {endpoint.endpointArtifacts.map(artifact => (
-                                                        <React.Fragment>
-                                                            {
-                                                                artifact.creation ? displayField("Created", artifact.creation.split("T")[0], "inline-attributes") : ""
-                                                            }
-                                                            {
-                                                                artifact.bytesize ? displayField("Size", getByteSize(artifact.bytesize), "inline-attributes") : ""
-                                                            }
-                                                            {
-                                                                artifact.filename ? displayField("File name", artifact.filename, "inline-attributes") : ""
-                                                            }
-                                                        </React.Fragment>
-                                                    ))}
-                                                </span> : ""
-                                        }
-                                        {
-                                            endpoint.endpointHost ?
-                                                <span>
-                                                    {endpoint.endpointHost.map(host => (
-                                                        <React.Fragment>
-                                                            {
-                                                                host.protocol ? displayField("Protocol", host.protocol, "inline-attributes") : ""
-                                                            }
-                                                            {
-                                                                host.accessURL ? displayURI("URL", host.accessURL, "inline-attributes") : ""
-                                                            }
-                                                        </React.Fragment>
-                                                    ))}
-                                                </span> : ""
-                                        }
-                                        <Divider />
-                                    </React.Fragment>
-                                ))}
-                            </div> : ""
-                    }
-                    <br />
-                    {
-                        resource.representation ?
-                            <div className="rounded-borders">
-                                <Typography variant="body2" gutterBottom align="left">Representation</Typography>
-                                {resource.representation.map(rep => (
-                                    <React.Fragment>
-                                        {
-                                            rep.labelMediatype ? displayField("MimeType", rep.labelMediatype, "inline-attributes") : ""
-                                        }
-                                        {
-                                            rep.representationVocab ? displayURI("Domain Vocabulary", rep.representationVocab, "inline-attributes") : ""
-                                        }
-                                        {
-                                            rep.representationStandard ? displayURI("Standard", rep.representationStandard, "inline-attributes") : ""
-                                        }
-                                        {
-                                            rep.instance ?
-                                                <span>
-                                                    {rep.instance.map(instance => (
-                                                        <React.Fragment>
-                                                            {
-                                                                instance.creation ? displayField("Created", instance.creation.split("T")[0], "inline-attributes") : ""
-                                                            }
-                                                            {
-                                                                instance.bytesize ? displayField("Bytesize", getByteSize(instance.bytesize), "inline-attributes") : ""
-                                                            }
-                                                            {
-                                                                instance.filename ? displayURI("Filename", instance.filename, "inline-attributes") : ""
-                                                            }
-                                                        </React.Fragment>
-                                                    ))}
-                                                </span> : ""
-                                        }
-                                    </React.Fragment>
-                                ))}
-                            </div> : ""
-                    }
-                    <br />
-                    {
-                        resource.contract ?
-                            <div className="rounded-borders">
-                                {resource.contract.map(contract => (
-                                    <React.Fragment>
-                                        <span>
-                                            <Typography variant="body2" gutterBottom align="left">Attached Usage Policy</Typography>
-                                            {
-                                                contract.contractProvider ? displayURI("Provider", contract.contractProvider, "inline-attributes") : ""
-                                            }
-                                            {
-                                                contract.contractConsumer ? displayURI("Consumer", contract.contractConsumer, "inline-attributes") : ""
-                                            }
-                                            {
-                                                contract.contractRefersTo ? displayField("Refers to", contract.contractRefersTo, "inline-attributes") : ""
-                                            }
-                                            {
-                                                contract.contractDate ? displayField("Date of signing", contract.contractDate.split("T")[0], "inline-attributes") : ""
-                                            }
-                                            {
-                                                contract.contractStart ? displayField("Start date", contract.contractStart.split("T")[0], "inline-attributes") : ""
-                                            }
-                                            {
-                                                contract.contractEnd ? displayField("End date", contract.contractEnd.split("T")[0], "inline-attributes") : ""
-                                            }
-                                            {
-                                                contract.contractDocument && contract.contractDocument.docTitle ? displayField("Contract Title", contract.contractDocument.docTitle.join(", "), "flow-attributes") : ""
-                                            }
-                                            {
-                                                contract.contractDocument && contract.contractDocument.docDesc ? displayField("Contract Description", contract.contractDocument.docDesc.join(", "), "flow-attributes") : ""
-                                            }
-                                        </span>
-                                        <br />
-                                        {
-                                            contract.contractObligation ?
-                                                <span>
-                                                    {contract.contractObligation.map(oblige => (
-                                                        <React.Fragment>
-                                                            {
-                                                                oblige.dutyConstraint ?
-                                                                    <span>
-                                                                        {oblige.dutyConstraint.map(constraint => (
-                                                                            <React.Fragment>
-                                                                                {
-                                                                                    constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Duty Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, "flow-attributes") : ""
-                                                                                }
-                                                                            </React.Fragment>
-                                                                        ))}
-                                                                    </span>
-                                                                    : ""
-                                                            }
-                                                            {
-                                                                oblige.dutyAction ? displayField("Duty Action", oblige.dutyAction.join(", "), "inline-attributes") : ""
-                                                            }
-                                                        </React.Fragment>
-                                                    ))}
-                                                </span> : ""
-                                        }
-                                        <br />
-                                        {
-                                            contract.contractPermission ?
-                                                <span>
-                                                    {contract.contractPermission.map(permission => (
-                                                        <React.Fragment>
-                                                            {
-                                                                permission.permissionConstraint ?
-                                                                    <span>
-                                                                        {permission.permissionConstraint.map(constraint => (
-                                                                            <React.Fragment>
-                                                                                {
-                                                                                    constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Permission Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, "flow-attributes") : ""
-                                                                                }
-                                                                            </React.Fragment>
-                                                                        ))}
-                                                                    </span>
-                                                                    : ""
-                                                            }
-                                                            {
-                                                                permission.permissionAction ? displayField("Permission Action", permission.permissionAction.join(", "), "inline-attributes") : ""
-                                                            }
-                                                        </React.Fragment>
-                                                    ))}
-                                                </span> : ""
-                                        }
-                                        <br />
-                                        {
-                                            contract.contractProhibition ?
-                                                <span>
-                                                    {contract.contractProhibition.map(prohibit => (
-                                                        <React.Fragment>
-                                                            {
-                                                                prohibit.prohibitionConstraint ?
-                                                                    <span>
-                                                                        {prohibit.prohibitionConstraint.map(constraint => (
-                                                                            <React.Fragment>
-                                                                                {
-                                                                                    constraint.leftOperand || constraint.operator || constraint.rightOperand ? displayField("Prohibition Constraint", constraint.leftOperand + " " + constraint.operator + " " + constraint.rightOperand, "flow-attributes") : ""
-                                                                                }
-                                                                            </React.Fragment>
-                                                                        ))}
-                                                                    </span>
-                                                                    : ""
-                                                            }
-                                                            {
-                                                                prohibit.prohibitionAction ? displayField("Prohibition Action", prohibit.prohibitionAction.join(", "), "inline-attributes") : ""
-                                                            }
-                                                        </React.Fragment>
-                                                    ))}
-                                                </span> : ""
-                                        }
-                                    </React.Fragment>
-                                ))}
-                            </div> : ""
-                    }
-                    <br />
-                    <Button color="primary" variant="outlined" onClick={() => { setOpen(!open); }}>
-                        Show/Hide JSON-LD
-                    </Button>
-                    <br />
-                    {
-                        open ?
-                            <div className="rounded-borders" style={{ margin: "20px" }}>
-                                {
-                                    resource.resourceAsJsonLd ? displayResourceRdf(resource.resourceAsJsonLd) : ""
-                                }
-                            </div>
-                            : ""
-                    }
-                </div>
-                <br />
-
-                <br />
-
-            </Container>
+                    : ""
+            }
+            <br /><br />
         </div>
     );
 }

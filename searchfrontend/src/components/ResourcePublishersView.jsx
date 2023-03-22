@@ -44,7 +44,7 @@ class ResourcePublishersView extends Component {
                 })
         } else {
             axios
-                .post('/es/registrations/_msearch?',
+            .post('/es/registrations/_msearch?',
                     '{"preference":"list-3"}\n{"query":{"match_all":{}},"size":0,"aggs":{"catalog.resources.publisher.keyword":{"terms":{"field":"catalog.resources.publisher.keyword","size":100,"order":{"_count":"desc"}}}}}\n'
                     , {
                         headers: {
